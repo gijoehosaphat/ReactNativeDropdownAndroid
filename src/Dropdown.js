@@ -18,22 +18,34 @@ class Dropdown extends React.Component {
   }
 
   render() {
+    console.log(this.props)
     return (
-      <NativeDropdown
-        {...this.props} onChange={this._onChange}
-        values={this.props.values} selected={this.props.selected} />
+      <NativeDropdown {...this.props}
+          onChange={this._onChange}
+          values={this.props.values}
+          selected={this.props.selected}
+          fontSize={this.props.fontSize}
+          fontColor={this.props.fontColor}
+          dropdownItemPadding={this.props.dropdownItemPadding}
+      />
     );
   }
 }
 
 Dropdown.propTypes = {
   ...View.propTypes,
+  fontColor: PropTypes.string,
+  fontSize: PropTypes.number,
+  dropdownItemPadding: PropTypes.number,
   values: PropTypes.array.isRequired,
   selected: PropTypes.number,
   onChange: PropTypes.func
 };
 
 Dropdown.defaultProps = {
+  fontColor: '#666666',
+  fontSize: 14,
+  dropdownItemPadding: 10,
   values: [ '' ],
   selected: 0
 }

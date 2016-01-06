@@ -20,6 +20,10 @@ public class Dropdown extends AppCompatSpinner {
     private boolean firstEventFired = false;
     private int mSelected = 0;
     private int selected = 0;
+    private int fontSize = 0;
+    private int dropdownItemPadding = 0;
+    private String fontColor = "";
+    private ArrayList<String> spinnerArray = new ArrayList<String>();
 
     public Dropdown(ThemedReactContext context) {
         super(context, 0);
@@ -28,33 +32,28 @@ public class Dropdown extends AppCompatSpinner {
     }
 
     public void setValues(ReadableArray values) {
-        ArrayList<String> spinnerArray = new ArrayList<String>();
         for (int i = 0; i < values.size(); i++) {
             String type = values.getType(i).name();
             if ("String".equals(type)) {
-                spinnerArray.add(values.getString(i));
+                this.spinnerArray.add(values.getString(i));
             } else {
                 if ("Number".equals(type)) {
                     Double v = values.getDouble(i);
                     if ((v == Math.floor(v)) && !Double.isInfinite(v)) {
-                        spinnerArray.add("" + values.getInt(i));
+                        this.spinnerArray.add("" + values.getInt(i));
                     } else {
-                        spinnerArray.add("" + v);
+                        this.spinnerArray.add("" + v);
                     }
                 } else if ("Boolean".equals(type)) {
-                    spinnerArray.add("" + values.getBoolean(i));
+                    this.spinnerArray.add("" + values.getBoolean(i));
                 } else if ("Array".equals(type)) {
-                    spinnerArray.add(values.getArray(i).toString());
+                    this.spinnerArray.add(values.getArray(i).toString());
                 } else if ("Map".equals(type)) {
-                    spinnerArray.add(values.getMap(i).toString());
+                    this.spinnerArray.add(values.getMap(i).toString());
                 }
             }
         }
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(mContext,
-                android.R.layout.simple_spinner_item, spinnerArray);
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        setAdapter(spinnerArrayAdapter);
-        setSelection(mSelected);
+        buildAdapter();
     }
 
     public void setSelected(int selected) {
@@ -63,6 +62,36 @@ public class Dropdown extends AppCompatSpinner {
         }
         mSelected = selected;
         setSelection(mSelected);
+    }
+
+    public void setFontSize(int fontSize) {
+        this.fontSize = fontSize;
+        buildAdapter();
+    }
+
+    public void setFontColor(String fontColor) {
+        this.fontColor = fontColor;
+        buildAdapter();
+    }
+
+    public void setDropdownItemPadding(int dropdownItemPadding) {
+        this.dropdownItemPadding = dropdownItemPadding;
+        buildAdapter();
+    }
+
+    private void buildAdapter() {
+      //Effectively won't be built until required items are set...
+      if (this.fontSize == 0 ||
+          this.spinnerArray.size() == 0 ||
+          this.fontColor == "" ||
+          this.dropdownItemPadding == 0) {
+        return;
+      }
+
+      DropdownCustomAdapter spinnerArrayAdapter = new DropdownCustomAdapter(mContext, android.R.layout.simple_spinner_item, this.spinnerArray, this.fontSize, this.fontColor, this.dropdownItemPadding);
+      spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+      setAdapter(spinnerArrayAdapter);
+      setSelection(mSelected);
     }
 
     private final AdapterView.OnItemSelectedListener ON_ITEM_SELECTED_LISTENER =
