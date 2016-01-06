@@ -18,7 +18,6 @@ class Dropdown extends React.Component {
   }
 
   render() {
-    console.log(this.props)
     return (
       <NativeDropdown {...this.props}
           onChange={this._onChange}
